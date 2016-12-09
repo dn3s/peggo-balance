@@ -34,7 +34,7 @@ time (stored in `~/.peggo_auth`). add `-m` and it'll refresh every 10 seconds.
 ## Issues
 
 I still haven't tested this thoroughly at all; either Peggo needs to release
-some docs), or someone needs to buy me more e-cash and a bus pass :)
+some docs, or someone needs to buy me more e-cash and a bus pass :)
 
 The Peggo website significantly lags behind the actual balance on your card.
 This is because transactions are not synced to the database in real-time; the
