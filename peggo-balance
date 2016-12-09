@@ -66,7 +66,7 @@ except FileNotFoundError:
     pass
     
 parser=argparse.ArgumentParser(
-        description="Download a webcomic archive"
+        description="Get your Peggo card balance"
         )
 parser.add_argument("username",
         help="Your Peggo username",
