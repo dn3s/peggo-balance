@@ -9,7 +9,7 @@ log in to a website to see my (potentially time-lagged by up to a day) balance.
 
 I'd rather just type a quick command `peggo-balance <username>`.
 
-Take a look [here](api.md) for everything I've discovered about their "API".
+Take a look [here](api.md) for everything I've discovered about their API.
 
 ## Installation
 
