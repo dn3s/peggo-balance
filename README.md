@@ -1,4 +1,4 @@
-# Peggo Balance Scraper
+# peggo-balance
 
 Get your balance for Winnipeg Transit's new fare system.
 
