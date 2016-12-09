@@ -24,11 +24,24 @@ def getSession(username, password):
 def getData(session):
     return requests.get("https://efare.winnipegtransit.com/e-Fare/service/v1/cards/", cookies=session).json()
 
+def cardBalance(card):
+    total=0;
+    for product in card["products"]:
+        if("prod_balance" in product):
+            total+=product["prod_balance"]
+    return total/100
+
 def printData(data):
-    print(json.dumps(data, indent="\t", sort_keys=True))
+    for card in data:
+        print("{name} ({pid}) - {fare} fare\nBalance: ${balance:.2f}".format(
+            name=    card["card_name"],
+            pid=     card["card_pid"],
+            fare=    "full" if card["card_type"]==1 else "reduced",
+            balance= cardBalance(card)
+            ))
 
 try:
-    session=getSession(sys.argv[1], getpass.getpass())
+    session=getSession(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else getpass.getpass())
 except Exception as e:
     print(e)
     sys.exit(2)
