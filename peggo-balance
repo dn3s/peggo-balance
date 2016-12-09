@@ -29,7 +29,7 @@ def printData(data):
 
 try:
     session=getSession(sys.argv[1], getpass.getpass())
-except AuthError as e:
+except Exception as e:
     print(e)
     sys.exit(2)
 printData(getData(session))
