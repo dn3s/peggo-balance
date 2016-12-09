@@ -1,19 +1,29 @@
 #!/usr/bin/env python
-import sys, requests, getpass, json
+import sys
+import requests
+import getpass
+import json
+import argparse
+import os
+import time
 
 class AuthError(Exception):
     pass
 
+class AuthFile:
+    username=None
+    password=None
+
 def getSession(username, password):
-    r=requests.post("https://efare.winnipegtransit.com/e-Fare/doLogin.html",
-            data={
-                "returnUrl": "",
-                "userId":
-                username, "password":
-                password
-                },
-            allow_redirects=False
-            )
+    r = requests.post("https://efare.winnipegtransit.com/e-Fare/doLogin.html",
+                      data={
+                          "returnUrl": "",
+                          "userId":
+                          username, "password":
+                          password
+                      },
+                      allow_redirects=False
+                      )
     if(r.status_code == 302):
         return r.cookies
     elif(r.status_code == 200):
@@ -21,28 +31,80 @@ def getSession(username, password):
     else:
         r.raise_for_status()
 
+
 def getData(session):
     return requests.get("https://efare.winnipegtransit.com/e-Fare/service/v1/cards/", cookies=session).json()
 
+
 def cardBalance(card):
-    total=0;
+    total = 0
     for product in card["products"]:
         if("prod_balance" in product):
-            total+=product["prod_balance"]
-    return total/100
+            total += product["prod_balance"]
+    return total / 100
 
-def printData(data):
+
+def printData(data, cls=False):
+    if(cls):
+        os.system("cls" if os.name == "nt" else "clear")
     for card in data:
         print("{name} ({pid}) - {fare} fare\nBalance: ${balance:.2f}".format(
-            name=    card["card_name"],
-            pid=     card["card_pid"],
-            fare=    "full" if card["card_type"]==1 else "reduced",
-            balance= cardBalance(card)
-            ))
+            name=card["card_name"],
+            pid=card["card_pid"],
+            fare="full" if card["card_type"] == 1 else "reduced",
+            balance=cardBalance(card)
+        ))
 
+authFileName=os.path.join(os.path.expanduser("~"), ".peggo_auth")
+
+authFile=AuthFile()
 try:
-    session=getSession(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else getpass.getpass())
+    with open(authFileName, "r") as f:
+        authFile.username=f.readline().strip('\n')
+        authFile.password=f.readline().strip('\n')
+except FileNotFoundError:
+    pass
+    
+parser=argparse.ArgumentParser(
+        description="Download a webcomic archive"
+        )
+parser.add_argument("username",
+        help="Your Peggo username",
+        default=authFile.username,
+        nargs="?"
+        )
+parser.add_argument("password",
+        help="Your Peggo password",
+        default=authFile.password,
+        nargs="?"
+        )
+parser.add_argument("-s", "--save-password",
+        action="store_true",
+        dest="savepass",
+        help="Save the password so you don't have to type it in next time"
+        )
+parser.add_argument("-m", "--monitor",
+        dest="monitor",
+        action="store_true",
+        help="Refresh the displayed balance every 10 seconds"
+        )
+args=parser.parse_args()
+
+if(args.username is None):
+    print("Until you save your login, you have to at least specify your username!")
+    sys.exit(1)
+if(args.username != authFile.username or args.password is None):
+    args.password=getpass.getpass()
+try:
+    session = getSession(args.username or args.username, args.password)
 except Exception as e:
     print(e)
     sys.exit(2)
-printData(getData(session))
+if(args.savepass):
+    with open(authFileName, "w") as f:
+        print(args.username, file=f)
+        print(args.password, file=f)
+printData(getData(session), cls=args.monitor)
+while(args.monitor):
+    time.sleep(10)
+    printData(getData(session), cls=True)
