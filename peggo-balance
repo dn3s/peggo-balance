@@ -1,0 +1,18 @@
+#!/usr/bin/env python
+import sys, requests, getpass
+
+def getCookies(username, password):
+    return requests.post("https://efare.winnipegtransit.com/e-Fare/doLogin.html",
+            data={
+                "returnUrl": "",
+                "userId":
+                username, "password":
+                password
+                },
+            allow_redirects=False
+            ).cookies
+
+def getData(cookies):
+    return requests.get("https://efare.winnipegtransit.com/e-Fare/service/v1/cards/", cookies=cookies).json()
+
+print(getData(getCookies(sys.argv[1], getpass.getpass())))
