@@ -9,6 +9,6 @@ log in to a website to see my (potentially time-lagged by up to a day) balance.
 
 I'd rather just type a quick command. Since there's no API, we'll need to
 scrape. For now there's just a quick proof-of-concept shell script that just
-dumps some unparsed JSON, but a no-dependency Python script is in the works.
+dumps some unparsed JSON, but a simple Python script is in the works.
 
 Take a look [here](flow.md) for how it'll work.
