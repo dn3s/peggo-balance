@@ -15,8 +15,8 @@ Take a look [here](api.md) for everything I've discovered about their API.
 
 You need Python 3.x with the Requests library. You almost certainly have Python
 already, so just `pip install requests`. It's a popular enough library that
-your distro probably has a package in its repositories if you prefer. For
-Arch, `sudo pacman -S python-requests`; for Ubuntu, `sudo apt install
+your distro probably has a package in its repositories if you prefer. For Arch,
+`sudo pacman -S python-requests`; for Ubuntu, `sudo apt install
 python3-requests`.
 
 ## Usage
@@ -26,7 +26,10 @@ peggo-balance <username>
 ```
 
 It'll prompt you for your password. Type it in. Then it'll tell you your
-balance. That's it.
+balance on your card(s).
+
+You can add in `-s` and it'll remember your username pasword for you for next
+time (stored in `~/.peggo_auth`). add `-m` and it'll refresh every 10 seconds.
 
 ## Issues
 
